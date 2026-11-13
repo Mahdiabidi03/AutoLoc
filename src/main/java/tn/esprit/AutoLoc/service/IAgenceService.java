@@ -1,5 +1,5 @@
 package tn.esprit.AutoLoc.service;
-
+import tn.esprit.AutoLoc.domain.Vehicule;
 import java.util.List;
 import tn.esprit.AutoLoc.domain.Agence;
 
@@ -9,4 +9,5 @@ public interface IAgenceService {
     List<Agence> findAll();
     Agence update(Long id, Agence agence);
     void deleteById(Long id);
+    Vehicule affecterVehiculeAAgence(Long idVehicule, Long idAgence);
 }
