@@ -1,0 +1,33 @@
+$kind: http-request
+url: "{{baseUrl}}/api/contrats"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"dateSignature\": \"2026-11-02\",\r
+
+    \  \"montantTotal\": 480.00,\r
+
+    \  \"valide\": true,\r
+
+    \  \"paiements\": [\r
+
+    \    { \"montant\": 150.00, \"datePaiement\": \"2026-11-02\", \"modePaiement\": \"CARTE\" },\r
+
+    \    { \"montant\": 330.00, \"datePaiement\": \"2026-11-06\", \"modePaiement\": \"VIREMENT\" }\r
+
+    \  ]\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));\r
+
+      pm.test(\"Deux paiements créés\", () => pm.expect(pm.response.json().paiements).to.have.lengthOf(2));\r
+
+      pm.environment.set(\"contratId\", pm.response.json().idContrat);\r
+
+      pm.environment.set(\"paiementId\", pm.response.json().paiements[0].idPaiement);"
+    language: text/javascript
+order: 6000

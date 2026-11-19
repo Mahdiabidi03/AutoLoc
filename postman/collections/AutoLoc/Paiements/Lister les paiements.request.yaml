@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/paiements"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));\r
+
+      pm.test(\"Au moins 2 paiements\", () => pm.expect(pm.response.json().length).to.be.at.least(2));"
+    language: text/javascript
+order: 1000

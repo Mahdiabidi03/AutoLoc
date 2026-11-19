@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/api/contrats"
+method: POST
+body:
+  type: json
+  content: '{ "dateSignature": "2026-11-02", "montantTotal": 1000.00, "valide": true }'
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));\r
+
+      pm.environment.set(\"contratId\", pm.response.json().idContrat);"
+    language: text/javascript
+order: 3000

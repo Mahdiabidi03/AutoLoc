@@ -3,9 +3,7 @@ package tn.esprit.AutoLoc.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.AutoLoc.domain.Agence;
-import tn.esprit.AutoLoc.domain.Vehicule;
 import tn.esprit.AutoLoc.exception.ResourceNotFoundException;
 import tn.esprit.AutoLoc.repository.IAgenceRepository;
 import tn.esprit.AutoLoc.repository.IVehiculeRepository;
@@ -55,17 +53,6 @@ public class AgenceServiceImpl implements IAgenceService {
         }
         agenceRepository.deleteById(id);
     }
-
-    @Override
-    @Transactional
-    public Vehicule affecterVehiculeAAgence(Long idVehicule, Long idAgence) {
-        Agence agence = findById(idAgence);
-        Vehicule vehicule = vehiculeRepository.findById(idVehicule)
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", idVehicule));
-        vehicule.setAgence(agence);
-        return vehiculeRepository.save(vehicule);
-    }
-
     private void valider(Agence agence) {
         if (agence.getNom() == null || agence.getNom().isBlank()) {
             throw new IllegalArgumentException("Le nom de l'agence est obligatoire");

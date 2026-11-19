@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/contrats/{{contratId}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Statut 204\", () => pm.response.to.have.status(204));\r
+
+      pm.test(\"Réponse sans corps\", () => pm.expect(pm.response.text()).to.eql(\"\"));"
+    language: text/javascript
+order: 9000
