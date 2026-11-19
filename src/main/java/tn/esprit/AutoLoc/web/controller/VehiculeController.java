@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.AutoLoc.domain.Vehicule;
 import tn.esprit.AutoLoc.service.IVehiculeService;
+import jakarta.validation.Valid;
+import tn.esprit.AutoLoc.web.dto.AffectationEquipementRequest;
+import tn.esprit.AutoLoc.web.dto.VehiculeResponse;
 
 @Tag(name = "Véhicules", description = "Gestion des véhicules")
 @RestController
@@ -73,5 +76,14 @@ public class VehiculeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         vehiculeService.deleteById(id);
+    }
+
+    @Operation(summary = "Affecter un équipement à un véhicule")
+    @ApiResponse(responseCode = "200", description = "Équipement affecté")
+    @ApiResponse(responseCode = "400", description = "Données invalides")
+    @ApiResponse(responseCode = "404", description = "Véhicule ou équipement introuvable")
+    @PutMapping("/affectation-equipement")
+    public VehiculeResponse affecterEquipement(@Valid @RequestBody AffectationEquipementRequest request) {
+        return vehiculeService.affecterEquipement(request.idVehicule(), request.idEquipement());
     }
 }

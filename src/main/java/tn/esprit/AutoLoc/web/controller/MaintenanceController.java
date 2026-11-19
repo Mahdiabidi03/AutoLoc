@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.AutoLoc.domain.Maintenance;
 import tn.esprit.AutoLoc.service.IMaintenanceService;
-
+import jakarta.validation.Valid;
+import tn.esprit.AutoLoc.web.dto.AffectationMaintenanceRequest;
+import tn.esprit.AutoLoc.web.dto.MaintenanceResponse;
 @Tag(name = "Maintenances", description = "Gestion des maintenances des véhicules")
 @RestController
 @RequestMapping("/maintenances")
@@ -65,5 +67,14 @@ public class MaintenanceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         maintenanceService.deleteById(id);
+    }
+
+    @Operation(summary = "Affecter une maintenance à un véhicule")
+    @ApiResponse(responseCode = "200", description = "Maintenance affectée")
+    @ApiResponse(responseCode = "400", description = "Données invalides")
+    @ApiResponse(responseCode = "404", description = "Maintenance ou véhicule introuvable")
+    @PutMapping("/affectation-vehicule")
+    public MaintenanceResponse affecterAVehicule(@Valid @RequestBody AffectationMaintenanceRequest request) {
+        return maintenanceService.affecterAVehicule(request.idMaintenance(), request.idVehicule());
     }
 }
