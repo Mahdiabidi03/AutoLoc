@@ -1,7 +1,9 @@
 package tn.esprit.AutoLoc.web.controller;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,11 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import tn.esprit.AutoLoc.domain.Maintenance;
 import tn.esprit.AutoLoc.service.IMaintenanceService;
-import jakarta.validation.Valid;
-import tn.esprit.AutoLoc.web.dto.AffectationMaintenanceRequest;
-import tn.esprit.AutoLoc.web.dto.MaintenanceResponse;
+import tn.esprit.AutoLoc.web.dto.MaintenanceDTO;
+
 @Tag(name = "Maintenances", description = "Gestion des maintenances des véhicules")
 @RestController
 @RequestMapping("/maintenances")
@@ -30,7 +30,7 @@ public class MaintenanceController {
     @Operation(summary = "Lister les maintenances")
     @ApiResponse(responseCode = "200", description = "Liste des maintenances")
     @GetMapping
-    public List<Maintenance> findAll() {
+    public List<MaintenanceDTO> findAll() {
         return maintenanceService.findAll();
     }
 
@@ -38,7 +38,7 @@ public class MaintenanceController {
     @ApiResponse(responseCode = "200", description = "Maintenance trouvée")
     @ApiResponse(responseCode = "404", description = "Maintenance introuvable")
     @GetMapping("/{id}")
-    public Maintenance findById(@PathVariable Long id) {
+    public MaintenanceDTO findById(@PathVariable Long id) {
         return maintenanceService.findById(id);
     }
 
@@ -47,8 +47,8 @@ public class MaintenanceController {
     @ApiResponse(responseCode = "400", description = "Données invalides")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Maintenance create(@RequestBody Maintenance maintenance) {
-        return maintenanceService.create(maintenance);
+    public MaintenanceDTO create(@Valid @RequestBody MaintenanceDTO dto) {
+        return maintenanceService.create(dto);
     }
 
     @Operation(summary = "Modifier une maintenance")
@@ -56,8 +56,19 @@ public class MaintenanceController {
     @ApiResponse(responseCode = "404", description = "Maintenance introuvable")
     @ApiResponse(responseCode = "400", description = "Données invalides")
     @PutMapping("/{id}")
-    public Maintenance update(@PathVariable Long id, @RequestBody Maintenance maintenance) {
-        return maintenanceService.update(id, maintenance);
+    public MaintenanceDTO update(@PathVariable Long id, @Valid @RequestBody MaintenanceDTO dto) {
+        return maintenanceService.update(id, dto);
+    }
+
+    @Operation(summary = "Affecter une maintenance à un véhicule")
+    @ApiResponse(responseCode = "200", description = "Maintenance affectée")
+    @ApiResponse(responseCode = "400", description = "Données invalides")
+    @ApiResponse(responseCode = "404", description = "Maintenance ou véhicule introuvable")
+    @PostMapping("/vehicule/{idVehicule}")
+    public MaintenanceDTO affecterMaintenanceAVehicule(
+            @PathVariable Long idVehicule,
+            @Valid @RequestBody MaintenanceDTO maintenanceDTO) {
+        return maintenanceService.affecterMaintenanceAVehicule(idVehicule, maintenanceDTO);
     }
 
     @Operation(summary = "Supprimer une maintenance")
@@ -67,14 +78,5 @@ public class MaintenanceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         maintenanceService.deleteById(id);
-    }
-
-    @Operation(summary = "Affecter une maintenance à un véhicule")
-    @ApiResponse(responseCode = "200", description = "Maintenance affectée")
-    @ApiResponse(responseCode = "400", description = "Données invalides")
-    @ApiResponse(responseCode = "404", description = "Maintenance ou véhicule introuvable")
-    @PutMapping("/affectation-vehicule")
-    public MaintenanceResponse affecterAVehicule(@Valid @RequestBody AffectationMaintenanceRequest request) {
-        return maintenanceService.affecterAVehicule(request.idMaintenance(), request.idVehicule());
     }
 }

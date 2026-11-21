@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import tn.esprit.AutoLoc.domain.Contrat;
 import tn.esprit.AutoLoc.service.IContratService;
+import tn.esprit.AutoLoc.web.dto.ContratDTO;
 
 @Tag(name = "Contrats", description = "Gestion des contrats de location")
 @RestController
@@ -30,7 +31,7 @@ public class ContratController {
     @Operation(summary = "Lister les contrats")
     @ApiResponse(responseCode = "200", description = "Liste des contrats")
     @GetMapping
-    public List<Contrat> findAll() {
+    public List<ContratDTO> findAll() {
         return contratService.findAll();
     }
 
@@ -38,7 +39,7 @@ public class ContratController {
     @ApiResponse(responseCode = "200", description = "Contrat trouvé")
     @ApiResponse(responseCode = "404", description = "Contrat introuvable")
     @GetMapping("/{id}")
-    public Contrat findById(@Parameter(description = "Identifiant du contrat") @PathVariable Long id) {
+    public ContratDTO findById(@Parameter(description = "Identifiant du contrat") @PathVariable Long id) {
         return contratService.findById(id);
     }
 
@@ -47,8 +48,8 @@ public class ContratController {
     @ApiResponse(responseCode = "400", description = "Données invalides")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Contrat create(@RequestBody Contrat contrat) {
-        return contratService.create(contrat);
+    public ContratDTO create(@Valid @RequestBody ContratDTO dto) {
+        return contratService.create(dto);
     }
 
     @Operation(summary = "Modifier un contrat")
@@ -56,8 +57,8 @@ public class ContratController {
     @ApiResponse(responseCode = "404", description = "Contrat introuvable")
     @ApiResponse(responseCode = "400", description = "Données invalides")
     @PutMapping("/{id}")
-    public Contrat update(@PathVariable Long id, @RequestBody Contrat contrat) {
-        return contratService.update(id, contrat);
+    public ContratDTO update(@PathVariable Long id, @Valid @RequestBody ContratDTO dto) {
+        return contratService.update(id, dto);
     }
 
     @Operation(summary = "Supprimer un contrat (et ses paiements)")

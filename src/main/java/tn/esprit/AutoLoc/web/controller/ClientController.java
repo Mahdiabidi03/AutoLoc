@@ -1,7 +1,9 @@
 package tn.esprit.AutoLoc.web.controller;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import tn.esprit.AutoLoc.domain.Client;
 import tn.esprit.AutoLoc.service.IClientService;
+import tn.esprit.AutoLoc.web.dto.ClientDTO;
 
 @Tag(name = "Clients", description = "Gestion des clients")
 @RestController
@@ -28,7 +30,7 @@ public class ClientController {
     @Operation(summary = "Lister les clients")
     @ApiResponse(responseCode = "200", description = "Liste des clients")
     @GetMapping
-    public List<Client> findAll() {
+    public List<ClientDTO> findAll() {
         return clientService.findAll();
     }
 
@@ -36,7 +38,7 @@ public class ClientController {
     @ApiResponse(responseCode = "200", description = "Client trouvé")
     @ApiResponse(responseCode = "404", description = "Client introuvable")
     @GetMapping("/{id}")
-    public Client findById(@PathVariable Long id) {
+    public ClientDTO findById(@PathVariable Long id) {
         return clientService.findById(id);
     }
 
@@ -45,8 +47,8 @@ public class ClientController {
     @ApiResponse(responseCode = "400", description = "Données invalides")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Client create(@RequestBody Client client) {
-        return clientService.create(client);
+    public ClientDTO create(@Valid @RequestBody ClientDTO dto) {
+        return clientService.create(dto);
     }
 
     @Operation(summary = "Modifier un client")
@@ -54,8 +56,8 @@ public class ClientController {
     @ApiResponse(responseCode = "404", description = "Client introuvable")
     @ApiResponse(responseCode = "400", description = "Données invalides")
     @PutMapping("/{id}")
-    public Client update(@PathVariable Long id, @RequestBody Client client) {
-        return clientService.update(id, client);
+    public ClientDTO update(@PathVariable Long id, @Valid @RequestBody ClientDTO dto) {
+        return clientService.update(id, dto);
     }
 
     @Operation(summary = "Supprimer un client")
